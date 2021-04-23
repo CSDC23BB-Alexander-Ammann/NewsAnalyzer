@@ -4,17 +4,32 @@ package newsanalyzer.ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 
 import newsanalyzer.ctrl.Controller;
+import newsanalyzer.ctrl.NewsAnalyserException;
+import newsapi.NewsApi;
+import newsapi.NewsApiBuilder;
+import newsapi.enums.Category;
+import newsapi.enums.Country;
+import newsapi.enums.Endpoint;
+
+import javax.naming.ldap.Control;
 
 public class UserInterface 
 {
 
 	private Controller ctrl = new Controller();
 
-	public void getDataFromCtrl1(){
+	public void getDataFromCtrl1() {
 		System.out.println("ABC");
-
+		NewsApi news = new NewsApiBuilder()
+				.setApiKey(Controller.APIKEY)
+				.setQ("corona")
+				.setEndPoint(Endpoint.TOP_HEADLINES)
+				.setSourceCountry(Country.at)
+				.setSourceCategory(Category.health)
+				.createNewsApi();
 		ctrl.process();
 	}
 
