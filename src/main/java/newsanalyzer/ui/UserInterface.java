@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 
+import newsanalyzer.ctrl.BuildUrlException;
 import newsanalyzer.ctrl.Controller;
 import newsanalyzer.ctrl.NewsAnalyserException;
 import newsapi.NewsApi;
@@ -30,10 +31,19 @@ public class UserInterface
 				.setSourceCountry(Country.at)
 				.setSourceCategory(Category.health)
 				.createNewsApi();
-		ctrl.process();
+		try {
+			ctrl.process(news);
+		} catch (MalformedURLException e) {
+			System.out.println("Wrong URL");
+		} catch (NewsAnalyserException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println("No entry found");
+		} catch (BuildUrlException e) {
+			e.printStackTrace();
+		}
 	}
-
-	public void getDataFromCtrl2(){
+		public void getDataFromCtrl2(){
 	}
 
 	public void getDataFromCtrl3(){

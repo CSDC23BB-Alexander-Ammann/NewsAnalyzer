@@ -1,5 +1,6 @@
 package newsapi;
 
+import newsanalyzer.ctrl.BuildUrlException;
 import newsanalyzer.ctrl.Controller;
 import newsanalyzer.ctrl.NewsAnalyserException;
 import newsapi.beans.Article;
@@ -8,6 +9,7 @@ import newsapi.enums.Category;
 import newsapi.enums.Country;
 import newsapi.enums.Endpoint;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class NewsAPIExample {
 
     private Controller ctrl = new Controller();
 
-    public static void main(String[] args) throws MalformedURLException, NewsAnalyserException {
+    public static void main(String[] args) throws IOException, NewsAnalyserException, BuildUrlException {
 
         NewsApi newsApi = new NewsApiBuilder()
                 .setApiKey(APIKEY)
@@ -26,12 +28,22 @@ public class NewsAPIExample {
                 .setSourceCountry(Country.at)
                 .setSourceCategory(Category.health)
                 .createNewsApi();
-
+        try {
             NewsReponse newsResponse = newsApi.getNews();
-            if(newsResponse != null){
+            if (newsResponse != null) {
                 List<Article> articles = newsResponse.getArticles();
                 articles.stream().forEach(article -> System.out.println(article.toString()));
             }
+        } catch (MalformedURLException e) {
+            System.out.println("Wrong URL");
+        } catch (NewsAnalyserException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println("No entry found");
+        } catch (BuildUrlException e) {
+            e.printStackTrace();
+        }
+
 
         newsApi = new NewsApiBuilder()
                 .setApiKey(APIKEY)
@@ -41,10 +53,20 @@ public class NewsAPIExample {
                 .setExcludeDomains("Lifehacker.com")
                 .createNewsApi();
 
-            newsResponse = newsApi.getNews();
-        if(newsResponse != null){
-            List<Article> articles = newsResponse.getArticles();
-            articles.stream().forEach(article -> System.out.println(article.toString()));
+        try {
+            NewsReponse newsResponse = newsApi.getNews();
+            if (newsResponse != null) {
+                List<Article> articles = newsResponse.getArticles();
+                articles.stream().forEach(article -> System.out.println(article.toString()));
+            }
+        } catch (MalformedURLException e) {
+            System.out.println("Wrong URL");
+        } catch (NewsAnalyserException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println("No entry found");
+        } catch (BuildUrlException e) {
+            e.printStackTrace();
         }
     }
 }
