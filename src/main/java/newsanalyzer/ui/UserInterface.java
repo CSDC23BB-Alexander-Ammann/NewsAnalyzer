@@ -44,6 +44,7 @@ public class UserInterface
 		}
 	}
 		public void getDataFromCtrl2(){
+
 	}
 
 	public void getDataFromCtrl3(){

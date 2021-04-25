@@ -24,7 +24,7 @@ public class Controller {
 			getTitlesSortedByLength(articles).forEach(article -> System.out.println(article.getTitle()));
 
 			System.out.println("Shortest Autor");
-			getShortestAuthorName(articles).forEach(article -> System.out.println(article.getAuthor());
+			getShortestAuthorName(articles).forEach(article -> System.out.println(article.getAuthor()));
 
 			System.out.println("Count of Articles");
 			System.out.println(getNumberOfArticle(articles));
@@ -48,6 +48,12 @@ public class Controller {
 	public Long getNumberOfArticle(List<Article> data) {
 		return (long) data.size();
 
+	}
+	public List<Article> getTitlesSortedByLength(List<Article> data) {
+		return data
+				.stream()
+				.sorted(Comparator.comparing(Article::getTitle))
+				.collect(Collectors.toList());
 	}
 
 	public String getBestProvider(List<Article> data) {
