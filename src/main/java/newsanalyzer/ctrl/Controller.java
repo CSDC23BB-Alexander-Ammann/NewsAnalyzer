@@ -5,10 +5,7 @@ import newsapi.beans.Article;
 import newsapi.beans.NewsReponse;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -23,11 +20,20 @@ public class Controller {
 			List<Article> articles = newsResponse.getArticles();
 			articles.stream().forEach(article -> System.out.println(article.toString()));
 
+			System.out.println("Title Sorted by Lenght");
+			getTitlesSortedByLength(articles).forEach(article -> System.out.println(article.getTitle()));
+
+			System.out.println("Shortest Autor");
+			getShortestAuthorName(articles).forEach(article -> System.out.println(article.getAuthor());
+
 			System.out.println("Count of Articles");
 			System.out.println(getNumberOfArticle(articles));
+
+			System.out.println("Best Provider");
+			System.out.println(getBestProvider(articles));
 		}
-		System.out.println("Title Sorted by Lenght");
-		getTitlesSortedByLength(articles).forEach(article -> System.out.println(article.getTitle()));
+
+
 
 
 		//TODO implement Error handling
@@ -52,10 +58,12 @@ public class Controller {
 				.stream()
 				.max(Map.Entry.comparingByValue()).orElseThrow(NoSuchElementException::new).getKey();
 	}
-	public String getShortestAuthorName(List <Article> data) {
+	public List<Article> getShortestAuthorName(List <Article> data) {
 		return data
 				.stream()
-				.min(Comparator.comparing(Article::getAuthor)).orElseThrow(NoSuchElementException::new).getAuthor();
+				.filter(article -> Objects.nonNull(article.getAuthor()))
+				.sorted(Comparator.comparing(Article::getAuthor))
+				.collect(Collectors.toList());
 
 	}
 	public Object getData() {
