@@ -3,6 +3,9 @@ package newsanalyzer.ctrl;
 import newsapi.NewsApi;
 import newsapi.beans.Article;
 import newsapi.beans.NewsReponse;
+import newsreader.downloader.ParallelDownloader;
+import newsreader.downloader.SequentialDownloader;
+import newsreader.downloader.UrlException;
 
 import java.io.IOException;
 import java.util.*;
@@ -12,29 +15,46 @@ public class Controller {
 
 	public static final String APIKEY = "f7175e033d9044b19b4b44c38cc34a94";
 
-	public void process(NewsApi news) throws NewsAnalyserException, BuildUrlException, IOException {
+	public void downloadUrlToList(NewsApi news) throws IOException, NewsAnalyserException, BuildURLException, UrlException {
+		NewsReponse newsReponse = news.getNews();
+
+		if(newsReponse  != null) {
+
+			List<Article> articles = newsReponse.getArticles();
+			articles.forEach(article -> System.out.println(article.toString()));
+
+			var urls = articles.stream()
+					.map(Article::getUrl)
+					.filter(Objects::nonNull)
+					.collect(Collectors.toList());
+
+			SequentialDownloader seqDwnld = new SequentialDownloader();
+			ParallelDownloader paraDwnld = new ParallelDownloader();
+			seqDwnld.process(urls);
+			paraDwnld.process(urls);
+		}
+	}
+
+	public void process(NewsApi news) throws IOException, NewsAnalyserException, BuildURLException {
 		System.out.println("Start process");
 
 		NewsReponse newsResponse = news.getNews();
-		if(newsResponse != null){
+		if(newsResponse != null) {
 			List<Article> articles = newsResponse.getArticles();
-			articles.stream().forEach(article -> System.out.println(article.toString()));
+			articles.forEach(article -> System.out.println(article.toString()));
 
-			System.out.println("Title Sorted by Lenght");
+			System.out.println("Title Sorted by Length");
 			getTitlesSortedByLength(articles).forEach(article -> System.out.println(article.getTitle()));
 
-			System.out.println("Shortest Autor");
+			System.out.println("Sorted by Author");
 			getShortestAuthorName(articles).forEach(article -> System.out.println(article.getAuthor()));
 
-			System.out.println("Count of Articles");
-			System.out.println(getNumberOfArticle(articles));
+			System.out.println("Count of Article");
+			System.out.println(getNumberofArticle(articles));
 
 			System.out.println("Best Provider");
 			System.out.println(getBestProvider(articles));
 		}
-
-
-
 
 		//TODO implement Error handling
 
@@ -44,35 +64,36 @@ public class Controller {
 
 		System.out.println("End process");
 	}
-	
-	public Long getNumberOfArticle(List<Article> data) {
-		return (long) data.size();
 
-	}
-	public List<Article> getTitlesSortedByLength(List<Article> data) {
+	public  List<Article> getTitlesSortedByLength(List<Article> data){
 		return data
 				.stream()
 				.sorted(Comparator.comparing(Article::getTitle))
 				.collect(Collectors.toList());
 	}
 
-	public String getBestProvider(List<Article> data) {
-		return data
-				.stream()
-				.collect(Collectors.groupingBy(article ->article.getSource().getName(),Collectors.counting()))
-				.entrySet()
-				.stream()
-				.max(Map.Entry.comparingByValue()).orElseThrow(NoSuchElementException::new).getKey();
-	}
 	public List<Article> getShortestAuthorName(List <Article> data) {
 		return data
 				.stream()
 				.filter(article -> Objects.nonNull(article.getAuthor()))
 				.sorted(Comparator.comparing(Article::getAuthor))
 				.collect(Collectors.toList());
-
 	}
-	public Object getData() {
+
+	public Long getNumberofArticle(List<Article> data) {
+		return (long) data.size();
+	}
+
+	public String getBestProvider(List<Article> data) {
+		return data
+				.stream()
+				.collect(Collectors.groupingBy(article->article.getSource().getName(),Collectors.counting()))
+				.entrySet()
+				.stream()
+				.max(Map.Entry.comparingByValue()).orElseThrow(NoSuchElementException::new).getKey();
+	}
+
+	public Object getData(NewsApi newsApi)  {
 
 		return null;
 	}

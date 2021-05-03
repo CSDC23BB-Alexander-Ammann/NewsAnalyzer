@@ -21,9 +21,9 @@ class MenuEntry<T> {
 public class Menu<T> {
 
 	private static final String NEW_LINE = "\n";
-	
+
 	private String titel;
-	
+
 	private List<MenuEntry<T>> menuEintraege;
 
 	Menu(String title) {
@@ -47,11 +47,11 @@ public class Menu<T> {
 		System.out.println(NEW_LINE + NEW_LINE + titel);
 		for (int i = 0; i < titel.length(); i++)
 			System.out.print("*");
-		
+
 		System.out.print(NEW_LINE);
 		menuEintraege.forEach(m -> System.out.println(m.key + ")\t" + m.text));
 		System.out.print(NEW_LINE);
-		
+
 		BufferedReader inReader = new BufferedReader(new InputStreamReader(System.in));
 		do {
 			String value = "\0";
@@ -72,7 +72,7 @@ public class Menu<T> {
 			System.out.println("Wrong input");
 		} while (true);
 	}
-	
+
 	@Override
 	public String toString() {
 		return getTitel();

@@ -1,7 +1,6 @@
 package newsapi;
 
-import newsanalyzer.ctrl.BuildUrlException;
-import newsanalyzer.ctrl.Controller;
+import newsanalyzer.ctrl.BuildURLException;
 import newsanalyzer.ctrl.NewsAnalyserException;
 import newsapi.beans.Article;
 import newsapi.beans.NewsReponse;
@@ -15,35 +14,24 @@ import java.util.List;
 
 public class NewsAPIExample {
 
-    public static final String APIKEY = "f7175e033d9044b19b4b44c38cc34a94";
+    public static final String APIKEY = "c808e079b93d47df95a84133c3102675";
 
-    private Controller ctrl = new Controller();
-
-    public static void main(String[] args) throws IOException, NewsAnalyserException, BuildUrlException {
+    public static void main(String[] args) throws IOException, NewsAnalyserException, BuildURLException {
 
         NewsApi newsApi = new NewsApiBuilder()
                 .setApiKey(APIKEY)
                 .setQ("corona")
                 .setEndPoint(Endpoint.TOP_HEADLINES)
                 .setSourceCountry(Country.at)
+                .setFrom("2021-04-20")
                 .setSourceCategory(Category.health)
                 .createNewsApi();
-        try {
-            NewsReponse newsResponse = newsApi.getNews();
-            if (newsResponse != null) {
-                List<Article> articles = newsResponse.getArticles();
-                articles.stream().forEach(article -> System.out.println(article.toString()));
-            }
-        } catch (MalformedURLException e) {
-            System.out.println("Wrong URL");
-        } catch (NewsAnalyserException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println("No entry found");
-        } catch (BuildUrlException e) {
-            e.printStackTrace();
-        }
 
+        NewsReponse newsResponse = newsApi.getNews();
+        if(newsResponse != null){
+            List<Article> articles = newsResponse.getArticles();
+            articles.forEach(article -> System.out.println(article.toString()));
+        }
 
         newsApi = new NewsApiBuilder()
                 .setApiKey(APIKEY)
@@ -53,20 +41,12 @@ public class NewsAPIExample {
                 .setExcludeDomains("Lifehacker.com")
                 .createNewsApi();
 
-        try {
-            NewsReponse newsResponse = newsApi.getNews();
-            if (newsResponse != null) {
-                List<Article> articles = newsResponse.getArticles();
-                articles.stream().forEach(article -> System.out.println(article.toString()));
-            }
-        } catch (MalformedURLException e) {
-            System.out.println("Wrong URL");
-        } catch (NewsAnalyserException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println("No entry found");
-        } catch (BuildUrlException e) {
-            e.printStackTrace();
+        newsResponse = newsApi.getNews();
+        if(newsResponse != null){
+            List<Article> articles = newsResponse.getArticles();
+            articles.stream().forEach(article -> System.out.println(article.toString()));
         }
+
+
     }
 }

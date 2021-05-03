@@ -2,7 +2,7 @@ package newsapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import newsanalyzer.ctrl.BuildUrlException;
+import newsanalyzer.ctrl.BuildURLException;
 import newsanalyzer.ctrl.NewsAnalyserException;
 import newsapi.beans.NewsReponse;
 import newsapi.enums.*;
@@ -106,37 +106,38 @@ public class NewsApi {
         this.endpoint = endpoint;
     }
 
-    protected String requestData() throws IOException, BuildUrlException {
+    protected String requestData() throws IOException, BuildURLException {
         String url = buildURL();
         System.out.println("URL: "+url);
-        URL obj = null;
-       // try {
-            obj = new URL(url);
-       // } catch (MalformedURLException e) {
-            // TOOO improve ErrorHandling
-      //      e.printStackTrace();
-        //}
+        URL obj;
+        // try {
+        obj = new URL(url);
+        // } catch (MalformedURLException e) {
+        // TOOO improve ErrorHandling
+        //  e.printStackTrace();
+        //  }
         HttpURLConnection con;
         StringBuilder response = new StringBuilder();
         //try {
-            con = (HttpURLConnection) obj.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-        // catch (IOException e) {
-            // TOOO improve ErrorHandling
-           // System.out.println("Error "+e.getMessage());
-
+        con = (HttpURLConnection) obj.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        //throw new IOException();
+        // } catch (IOException e) {
+        // TOOO improve ErrorHandling
+        //     System.out.println("Error "+e.getMessage());
+        // }
         return response.toString();
     }
 
-    protected String buildURL() throws BuildUrlException {
+    protected String buildURL() throws BuildURLException {
         // TODO ErrorHandling
         if (getApiKey().equals("") || getQ().equals("")){
-            throw new BuildUrlException("Wrong input");
+            throw new BuildURLException("Eingabe Falsch");
         }
         String urlbase = String.format(NEWS_API_URL,getEndpoint().getValue(),getQ(),getApiKey());
         StringBuilder sb = new StringBuilder(urlbase);
@@ -177,23 +178,25 @@ public class NewsApi {
         return sb.toString();
     }
 
-    public NewsReponse getNews() throws IOException, NewsAnalyserException, BuildUrlException {
+    public NewsReponse getNews() throws IOException, NewsAnalyserException, BuildURLException {
         NewsReponse newsReponse = null;
         String jsonResponse = requestData();
         if(jsonResponse != null && !jsonResponse.isEmpty()){
 
             ObjectMapper objectMapper = new ObjectMapper();
             try {
+                //jsonResponse="aldsdoovksv";
                 newsReponse = objectMapper.readValue(jsonResponse, NewsReponse.class);
                 if(!"ok".equals(newsReponse.getStatus())){
                     System.out.println("Error: "+newsReponse.getStatus());
                 }
             } catch (JsonProcessingException e) {
                 //System.out.println("Error: "+e.getMessage());
-                throw new NewsAnalyserException("Json - Problem");
+                throw new NewsAnalyserException("JSON - Geht nicht");
             }
         }
         //TODO improve Errorhandling
+
         return newsReponse;
     }
 }
